@@ -84,7 +84,7 @@ functions:
     handler: handler.createPost
     events:
     - http:
-        path: /post
+        path: /createPost
         method: post
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events

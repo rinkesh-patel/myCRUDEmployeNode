@@ -2,7 +2,8 @@
 
 const AWS = require('aws-sdk');
 const db = new AWS.DynamoDB.DocumentClient();
-const uuid = require('uuid/v4');
+// const uuid = require('uuid/v4');
+const { v4: uuid } = require('uuid');
 
 const employeesTable = process.env.DYNAMO_DB_TABLE;
 
