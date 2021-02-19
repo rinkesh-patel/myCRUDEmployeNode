@@ -37,8 +37,8 @@ module.exports.createPost = (event, context, callback) => {
   const post = {
     id: uuid(),
     createdAt: new Date().toISOString(),
-    title: reqBody.firstName,
-    body: reqBody.lastName
+    firstName: reqBody.firstName,
+    lastName: reqBody.lastName
   };
 
   return db
