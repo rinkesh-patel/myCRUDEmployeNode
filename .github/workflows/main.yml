@@ -1,27 +1,24 @@
 name: deploy to lambda
 on: [push]
+
+# Specify what jobs to run
 jobs:
-  deploy_source:
-    name: build and deploy lambda
-    strategy:
-      matrix:
-        node-version: [14.x]
+  deploy:
+    name: deploy
     runs-on: ubuntu-latest
+    env: #Setup environmental variables for serverless deployment
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
     steps:
+      # Use github defaut action to trigger action in this repo. Mandatory
+      # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/configuring-a-workflow#using-the-checkout-action
       - uses: actions/checkout@v1
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: npm install and build
+
+      - name: npm install dependencies
         run: npm install
-        env:
-          CI: true
-      - name: serverless deploy
-        uses: serverless/github-action@master
+
+      - name: Serverless
+        uses: serverless/github-action@v1.53.0
         with:
           args: deploy
-        env:
-          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws_region: us-east-2
