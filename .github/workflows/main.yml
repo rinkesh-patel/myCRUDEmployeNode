@@ -11,15 +11,15 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     steps:
+      # Use github defaut action to trigger action in this repo. Mandatory
+      # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/configuring-a-workflow#using-the-checkout-action
+      - uses: actions/checkout@v1
+
       - name: Create env file
         run: | 
           cat > env.yml << EOF
           ${{ secrets.ENV }}
           EOF
-
-      # Use github defaut action to trigger action in this repo. Mandatory
-      # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/configuring-a-workflow#using-the-checkout-action
-      - uses: actions/checkout@v1
 
       - name: npm install dependencies
         run: npm install
