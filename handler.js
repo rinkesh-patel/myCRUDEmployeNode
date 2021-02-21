@@ -181,37 +181,36 @@ function responseb(statusCode, message) {
   };
 }
 
+
 module.exports.getWeather = (event, context, callback) => {
   const reqBody = JSON.parse(event.body);
-  var weather;
-
+  let url = `https://api.openweathermap.org/data/2.5/weather?zip=${reqBody.zip}&appid=28686699b8b52a829bfc61fc5621a0c4&units=Imperial`
   request(url, (err, response, body) => {
+
     if (err) {
       return callback(null, responseb(err.statusCode, err));
     } else {
-      weather = JSON.parse(body)
-      let message = `It's ${weather.main.temp} degrees in ${weather.name}!`;
-      console.log(message);
-      console.log(weather);
+      let weather = JSON.parse(body)
+
+      const post = {
+      id: uuid(),
+      createdAt: new Date().toISOString(),
+      location: weather.name,
+      temprature: weather.main.temp
+      };
+      
+      return db
+      .put({
+        TableName: weatherTable,
+        Item: post
+      })
+      .promise()
+      .then(() => {
+        callback(null, responseb(201, post));
+      })
+      .catch((err) => responseb(null, responseb(err.statusCode, err)));  
     }
+
   });
 
-  const post = {
-    id: uuid(),
-    createdAt: new Date().toISOString(),
-    location: weather.name,
-    temprature: weather.main.temp
-  };
-
-  // return callback(null, responseb(200, body));
-  return db
-  .put({
-    TableName: weatherTable,
-    Item: post
-  })
-  .promise()
-  .then(() => {
-    callback(null, response(201, post));
-  })
-  .catch((err) => response(null, response(err.statusCode, err)));
 };
