@@ -172,17 +172,23 @@ module.exports.deletePost = (event, context, callback) => {
 
 //   callback(null, response(200,  weather));
 // };
-
+// Create a response
+function responseb(statusCode, message) {
+  return {
+    statusCode: statusCode,
+    body: JSON.stringify(message)
+  };
+}
 const callExternalURL = (callback) => {
   request(url, (err, response, body) => {
     if(err){
-      return callback(null, response(err.statusCode, err));
+      return callback(null, responseb(err.statusCode, err));
     } else {
       let weather = JSON.parse(body)
       let message = `It's ${weather.main.temp} degrees in ${weather.name}!`;
       console.log(message);
       console.log(weather);
-      return callback(null, response(200,  weather));
+      return callback(null, responseb(200,  body));
     }
   });
 }
