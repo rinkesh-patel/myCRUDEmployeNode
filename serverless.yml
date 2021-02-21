@@ -122,7 +122,6 @@ functions:
   getWeather:
     handler: handler.getWeather
     events:
-      - schedule: rate(1 hours)
     - http:
         path: /weather/{zip}
         method: get
