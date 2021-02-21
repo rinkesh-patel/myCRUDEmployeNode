@@ -158,7 +158,7 @@ module.exports.deletePost = (event, context, callback) => {
 module.exports.getWeather = (event, context, callback) => {
   let apiKey = '28686699b8b52a829bfc61fc5621a0c4';
   let city = '75071';
-  let url = `http://api.openweathermap.org/data/2.5/weather?zip=${city}&units=imperial&appid=${apiKey}`
+  let url = `https://api.openweathermap.org/data/2.5/weather?zip=75071&appid=28686699b8b52a829bfc61fc5621a0c4&units=Imperial`
   
   request(url, function (err, response, body) {
     if(err){
