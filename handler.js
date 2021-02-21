@@ -7,6 +7,7 @@ const request = require('request');
 const { v4: uuid } = require('uuid');
 
 const employeesTable = process.env.DYNAMO_DB_TABLE;
+const weatherTable = process.env.WEATHER_DYNAMO_DB_TABLE;
 
 // Create a response
 function response(statusCode, message) {
@@ -158,7 +159,7 @@ module.exports.deletePost = (event, context, callback) => {
 // module.exports.getWeather = (event, context, callback) => {
 //   let apiKey = '28686699b8b52a829bfc61fc5621a0c4';
 //   let city = '75071';
-  let url = 'https://api.openweathermap.org/data/2.5/weather?zip=75071&appid=28686699b8b52a829bfc61fc5621a0c4&units=Imperial'
+let url = 'https://api.openweathermap.org/data/2.5/weather?zip=75071&appid=28686699b8b52a829bfc61fc5621a0c4&units=Imperial'
 //   let weather;
 //   request(url, function (err, response, body) {
 //     if(err){
@@ -181,17 +182,36 @@ function responseb(statusCode, message) {
 }
 
 module.exports.getWeather = (event, context, callback) => {
+  const reqBody = JSON.parse(event.body);
+  var weather;
 
   request(url, (err, response, body) => {
-    if(err){
+    if (err) {
       return callback(null, responseb(err.statusCode, err));
     } else {
-      let weather = JSON.parse(body)
+      weather = JSON.parse(body)
       let message = `It's ${weather.main.temp} degrees in ${weather.name}!`;
       console.log(message);
       console.log(weather);
-      return callback(null, responseb(200,  body));
     }
   });
-  
+
+  const post = {
+    id: uuid(),
+    createdAt: new Date().toISOString(),
+    location: weather.name,
+    temprature: weather.main.temp
+  };
+
+  // return callback(null, responseb(200, body));
+  return db
+  .put({
+    TableName: weatherTable,
+    Item: post
+  })
+  .promise()
+  .then(() => {
+    callback(null, response(201, post));
+  })
+  .catch((err) => response(null, response(err.statusCode, err)));
 };

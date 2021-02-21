@@ -19,6 +19,7 @@ service: myCRUDEmployeNode
 custom:
   settings:
     DYNAMO_DB_TABLE: employees
+    WEATHER_DYNAMO_DB_TABLE: weather
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
@@ -45,6 +46,7 @@ provider:
               - dynamodb:DeleteItem
           Resource:
             - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.settings.DYNAMO_DB_TABLE}"
+            - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.settings.WEATHER_DYNAMO_DB_TABLE}"
 
 # you can overwrite defaults here
 #  stage: dev
@@ -190,3 +192,16 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:custom.settings.DYNAMO_DB_TABLE}
+    WeatherTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+        - AttributeName: "id"
+          AttributeType: "S"
+        KeySchema:
+        - AttributeName: "id"
+          KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.settings.WEATHER_DYNAMO_DB_TABLE}
