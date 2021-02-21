@@ -159,16 +159,15 @@ module.exports.getWeather = (event, context, callback) => {
   let apiKey = '28686699b8b52a829bfc61fc5621a0c4';
   let city = '75071';
   let url = `https://api.openweathermap.org/data/2.5/weather?zip=75071&appid=28686699b8b52a829bfc61fc5621a0c4&units=Imperial`
-  let weather;
+
   request(url, function (err, response, body) {
     if(err){
       console.log('error:', JSON.parse(err));
     } else {
-      weather = JSON.parse(body)
+      let weather = JSON.parse(body)
       let message = `It's ${weather.main.temp} degrees in ${weather.name}!`;
       console.log(message);
+      callback(null, response(200,  weather));
     }
   });
-
-  callback(null, response(200,  weather));
 };
