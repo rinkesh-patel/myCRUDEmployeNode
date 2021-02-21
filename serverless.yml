@@ -20,6 +20,7 @@ custom:
   settings:
     DYNAMO_DB_TABLE: employees
     WEATHER_DYNAMO_DB_TABLE: weather
+    WEATHER_API_KEY: ${file(env.yml):WEATHER_API_KEY}
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details

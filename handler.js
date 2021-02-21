@@ -181,10 +181,11 @@ function responseb(statusCode, message) {
   };
 }
 
-
+var appId = process.env.WEATHER_API_KEY;
+console.log(appId + ' ----------- APP ID');
 module.exports.getWeather = (event, context, callback) => {
-  const reqBody = JSON.parse(event.body);
-  let url = `https://api.openweathermap.org/data/2.5/weather?zip=${reqBody.zip}&appid=28686699b8b52a829bfc61fc5621a0c4&units=Imperial`
+  // const reqBody = JSON.parse(event.body); 
+  let url = `https://api.openweathermap.org/data/2.5/weather?zip=75071&appid=${appId}&units=Imperial`
   request(url, (err, response, body) => {
 
     if (err) {
