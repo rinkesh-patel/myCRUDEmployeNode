@@ -122,8 +122,9 @@ functions:
   getWeather:
     handler: handler.getWeather
     events:
+    - schedule: rate(1 hours)
     - http:
-        path: /weather
+        path: /weather/{zip}
         method: get
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
