@@ -176,12 +176,13 @@ module.exports.deletePost = (event, context, callback) => {
 const callExternalURL = (callback) => {
   request(url, (err, response, body) => {
     if(err){
-      return callback('error:', JSON.parse(err));
+      return callback(null, response(err.statusCode, err));
     } else {
-      weather = JSON.parse(body)
+      let weather = JSON.parse(body)
       let message = `It's ${weather.main.temp} degrees in ${weather.name}!`;
       console.log(message);
-      return callback(weather);
+      console.log(weather);
+      return callback(null, response(200,  weather));
     }
   });
 }
