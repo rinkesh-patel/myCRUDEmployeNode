@@ -179,7 +179,9 @@ function responseb(statusCode, message) {
     body: JSON.stringify(message)
   };
 }
-const callExternalURL = (callback) => {
+
+module.exports.getWeather = (event, context, callback) => {
+
   request(url, (err, response, body) => {
     if(err){
       return callback(null, responseb(err.statusCode, err));
@@ -191,6 +193,5 @@ const callExternalURL = (callback) => {
       return callback(null, responseb(200,  body));
     }
   });
-}
-
-module.exports.getWeather = callExternalURL;
+  
+};
