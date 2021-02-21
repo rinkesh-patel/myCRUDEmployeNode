@@ -116,6 +116,12 @@ functions:
     - http:
         path: /post/{id}
         method: delete
+  getWeather:
+    handler: handler.getWeather
+    events:
+    - http:
+        path: /weather
+        method: get
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details

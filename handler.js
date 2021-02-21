@@ -2,6 +2,7 @@
 
 const AWS = require('aws-sdk');
 const db = new AWS.DynamoDB.DocumentClient();
+const request = require('request');
 // const uuid = require('uuid/v4');
 const { v4: uuid } = require('uuid');
 
@@ -146,4 +147,28 @@ module.exports.deletePost = (event, context, callback) => {
       callback(null, response(200, { message: 'Post deleted successfully' }))
     )
     .catch((err) => callback(null, response(err.statusCode, err)));
+};
+
+
+
+
+
+// const apiKey = process.env.DYNAMO_DB_TABLE;
+
+module.exports.getWeather = (event, context, callback) => {
+  let apiKey = '28686699b8b52a829bfc61fc5621a0c4';
+  let city = '75071';
+  let url = `http://api.openweathermap.org/data/2.5/weather?zip=${city}&units=imperial&appid=${apiKey}`
+  
+  request(url, function (err, response, body) {
+    if(err){
+      console.log('error:', error);
+    } else {
+      let weather = JSON.parse(body)
+      let message = `It's ${weather.main.temp} degrees in ${weather.name}!`;
+      console.log(message);
+    }
+  });
+
+  callback(null, response(200, { message:  weather}));
 };

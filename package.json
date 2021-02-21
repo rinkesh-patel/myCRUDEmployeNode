@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/rinkesh-patel/myCRUDEmployeNode#readme",
   "dependencies": {
+    "request": "^2.88.2",
     "uuid": "^8.3.2"
   }
 }
