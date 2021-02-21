@@ -170,5 +170,5 @@ module.exports.getWeather = (event, context, callback) => {
     }
   });
 
-  callback(null, response(200, { message:  weather}));
+  callback(null, response(200,  weather));
 };
