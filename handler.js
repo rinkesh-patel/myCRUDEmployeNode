@@ -192,12 +192,9 @@ function getURL(zip, appId) {
 var appId = process.env.WEATHER_API_KEY;
 
 module.exports.getWeather = (event, context, callback) => {
-  console.log(`${appId} ----------- APP ID`);
   const zip = event.pathParameters.zip;
-  console.log(`${zip} ----------- zip`);
   let url = getURL(zip, appId);
 
-  // const reqBody = JSON.parse(event.body); 
   request(url, (err, response, body) => {
 
     if (err) {
