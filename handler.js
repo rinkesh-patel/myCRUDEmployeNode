@@ -209,7 +209,7 @@ module.exports.getWeather = (event, context, callback) => {
       temprature: weather.main.temp
       };
       
-      return db
+      db
       .put({
         TableName: weatherTable,
         Item: post
@@ -219,8 +219,22 @@ module.exports.getWeather = (event, context, callback) => {
         callback(null, responseb(201, post));
       })
       .catch((err) => responseb(null, responseb(err.statusCode, err)));  
-    }
 
+
+
+
+
+    var stepfunctions = new AWS.StepFunctions();
+
+    var params = {
+        stateMachineArn: 'arn:aws:states:us-east-2:328755147801:stateMachine:StockTradingStateMachine-jmXP8xlRjp6T',
+        input: `{"message": "${weather.main.temp}"}`
+      };
+    }
+    return stepfunctions.startExecution(params).promise().then(() => {
+      callback(null, responseb(201, post));
+    })
+    .catch((err) => responseb(null, responseb(err.statusCode, err)));  
   });
 
 };
