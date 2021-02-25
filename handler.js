@@ -239,3 +239,52 @@ module.exports.getWeather = (event, context, callback) => {
   });
 
 };
+
+
+module.exports.getHomeWeather = (event, context, callback) => {
+  const zip = "75071";
+  let url = getURL(zip, appId);
+
+  request(url, (err, response, body) => {
+
+    if (err) {
+      return callback(null, responseb(err.statusCode, err));
+    } else {
+      let weather = JSON.parse(body)
+
+      const post = {
+      id: uuid(),
+      createdAt: new Date().toISOString(),
+      location: weather.name,
+      temprature: weather.main.temp
+      };
+      
+      var params = {
+        stateMachineArn: 'arn:aws:states:us-east-2:328755147801:stateMachine:StockTradingStateMachine-jmXP8xlRjp6T',
+        input: `{"message": "${weather.main.temp}"}`
+      };
+       
+      stepfunctions.startExecution(params, function (err, data) {
+        if (err) {
+          console.log(err)
+        } else {
+          console.log('started execution of step function')
+        }
+      })
+  
+     return db
+      .put({
+        TableName: weatherTable,
+        Item: post
+      })
+      .promise()
+      .then(() => {
+        callback(null, responseb(201, post));
+      })
+      .catch((err) => responseb(null, responseb(err.statusCode, err)));
+    
+    }
+
+  });
+
+};
