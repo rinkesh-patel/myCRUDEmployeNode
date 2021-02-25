@@ -2,6 +2,7 @@
 
 const AWS = require('aws-sdk');
 const db = new AWS.DynamoDB.DocumentClient();
+var stepfunctions = new AWS.StepFunctions();
 const request = require('request');
 // const uuid = require('uuid/v4');
 const { v4: uuid } = require('uuid');
@@ -209,7 +210,20 @@ module.exports.getWeather = (event, context, callback) => {
       temprature: weather.main.temp
       };
       
-      db
+      var params = {
+        stateMachineArn: 'arn:aws:states:us-east-2:328755147801:stateMachine:StockTradingStateMachine-jmXP8xlRjp6T',
+        input: `{"message": "${weather.main.temp}"}`
+      };
+       
+      stepfunctions.startExecution(params, function (err, data) {
+        if (err) {
+          console.log(err)
+        } else {
+          console.log('started execution of step function')
+        }
+      })
+  
+     return db
       .put({
         TableName: weatherTable,
         Item: post
@@ -218,23 +232,10 @@ module.exports.getWeather = (event, context, callback) => {
       .then(() => {
         callback(null, responseb(201, post));
       })
-      .catch((err) => responseb(null, responseb(err.statusCode, err)));  
-
-
-
-
-
-    var stepfunctions = new AWS.StepFunctions();
-
-    var params = {
-        stateMachineArn: 'arn:aws:states:us-east-2:328755147801:stateMachine:StockTradingStateMachine-jmXP8xlRjp6T',
-        input: `{"message": "${weather.main.temp}"}`
-      };
+      .catch((err) => responseb(null, responseb(err.statusCode, err)));
+    
     }
-    return stepfunctions.startExecution(params).promise().then(() => {
-      callback(null, responseb(201, post));
-    })
-    .catch((err) => responseb(null, responseb(err.statusCode, err)));  
+
   });
 
 };
